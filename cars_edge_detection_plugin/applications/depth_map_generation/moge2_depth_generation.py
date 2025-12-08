@@ -159,6 +159,12 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
                 moge_output,
                 cars_ds_name="moge_output",
             )
+            self.orchestrator.add_to_save_lists(
+                os.path.join(dump_folder, "tile_id.tif"),
+                "tile_id",
+                moge_output,
+                cars_ds_name="moge_output",
+            )
 
         self.orchestrator.add_to_save_lists(
             os.path.join(save_folder, "edges.tif"),
@@ -167,6 +173,7 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
             cars_ds_name="moge_output",
         )
 
+        tile_id = 0
         for row in range(len(moge_output.tiling_grid)):
             for col in range(len(moge_output.tiling_grid[0])):
 
@@ -179,6 +186,15 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
 
                 moge_output[row, col] = self.orchestrator.cluster.create_task(
                     moge2_wrapper
-                )(sensor, window, overlap, self.model, full_saving_info)
+                )(
+                    sensor,
+                    window,
+                    overlap,
+                    self.model,
+                    full_saving_info,
+                    tile_id,
+                )
+
+                tile_id += 1
 
         return moge_output
