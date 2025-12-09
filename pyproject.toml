@@ -101,6 +101,9 @@ universal = false
 [project.entry-points."cars.plugins"]
 plugin = "cars_edge_detection_plugin"
 
+# entry points cli scripts
+[project.scripts]
+cars-download-moge2 = "cars_edge_detection_plugin.download_models:main"
 
 [tool.cibuildwheel]
 skip = ["pp*", "*-win32"]

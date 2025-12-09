@@ -93,3 +93,6 @@ instance/
 
 # Swap file
 *.swp
+
+# model folder & files
+cars_edge_detection_plugin/applications/depth_map_generation/models/*
