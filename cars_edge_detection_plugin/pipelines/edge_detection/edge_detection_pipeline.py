@@ -146,7 +146,7 @@ class EdgeDetection(PipelineTemplate):
                 logging.error(msg)
                 raise NameError(msg)
 
-        depth_map_generation_conf = used_conf.get("depth_map_generation", {})
+        depth_map_generation_conf = conf.get("depth_map_generation", {})
         if "save_intermediate_data" not in depth_map_generation_conf:
             depth_map_generation_conf["save_intermediate_data"] = (
                 self.save_intermediate_data

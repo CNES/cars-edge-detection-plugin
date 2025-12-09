@@ -22,8 +22,11 @@
 this module contains the epipolar grid generation application class.
 """
 
+import logging
+
 # Standard imports
 import os
+from pathlib import Path
 
 import cars.orchestrator.orchestrator as ocht
 from cars.core.inputs import rasterio_get_size
@@ -32,6 +35,8 @@ from cars.core.inputs import rasterio_get_size
 from cars.data_structures import cars_dataset
 from cars.orchestrator.cluster.log_wrapper import cars_profile
 from cars.pipelines.parameters import sensor_inputs_constants as sens_cst
+from huggingface_hub import snapshot_download
+from huggingface_hub.errors import LocalEntryNotFoundError
 
 # Third party imports
 from json_checker import Checker
@@ -91,6 +96,10 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
         overloaded_conf["model"] = conf.get(
             "model", "Ruicheng/moge-2-vitl-normal"
         )
+        # replace with actual path to model
+        overloaded_conf["model"] = self.check_model_exists(
+            overloaded_conf["model"]
+        )
 
         depth_generation_schema = {
             "save_intermediate_data": bool,
@@ -103,6 +112,59 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
         checker.validate(overloaded_conf)
 
         return overloaded_conf
+
+    def check_model_exists(self, model):
+        """
+        Because the model is not packaged with the plugin, it needs to be
+        downloaded or imported in some way.
+        Check that the model is directly a path, a cached model, or download
+        the model.
+        Returns the path to the model checkpoint file.
+        """
+        # if the model is a file
+        if os.path.exists(model):
+            return model
+
+        # if the model is a recognized hf repo
+        models_dir = Path(__file__).parent / "models"
+        recognized_repos = {
+            "Ruicheng/moge-2-vitl-normal": models_dir / "moge-2-vitl-normal.pt",
+            "Ruicheng/moge-2-vitb-normal": models_dir / "moge-2-vitb-normal.pt",
+            "Ruicheng/moge-2-vits-normal": models_dir / "moge-2-vits-normal.pt",
+        }
+        if model in recognized_repos:
+            # check if downloaded through cars-download-moge2-model
+            if os.path.exists(recognized_repos[model]):
+                return recognized_repos[model].absolute().as_posix()
+
+            logging.warning(
+                f"The requested MoGe-2 model ({model}) was not downloaded "
+                "prior to launching CARS, using cars-download-moge2."
+            )
+
+        # if the model is a general hf repo
+        try:
+            local_model_path = snapshot_download(
+                repo_id=model, local_files_only=True
+            )
+
+            return local_model_path
+
+        except LocalEntryNotFoundError:
+            logging.warning(
+                f"The requested MoGe-2 model ({model}) was not found locally. "
+                "CARS will try to download it from HuggingFace."
+            )
+
+        try:
+            local_model_path = snapshot_download(repo_id=model)
+
+            return local_model_path
+        except Exception as exception:
+            logging.error(
+                f"The requested MoGe-2 model ({model}) could not be downloaded."
+            )
+            raise exception
 
     @cars_profile(name="Depth Map Generation")
     def run(

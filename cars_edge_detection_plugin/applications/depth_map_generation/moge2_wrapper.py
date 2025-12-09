@@ -67,12 +67,7 @@ def moge2_wrapper(sensor, window, overlap, model_name, saving_info, tile_id):
         profile=None,
         attributes={},
         # we override overlaps and trim our data after running the model
-        overlaps={
-            "left": 0,
-            "right": 0,
-            "up": 0,
-            "down": 0,
-        },
+        overlaps={"left": 0, "right": 0, "up": 0, "down": 0},
     )
 
     return out_dataset
@@ -92,8 +87,12 @@ def add_insufficient_overlap(
     base_width = window[3] + overlap[3] - window[2] + overlap[2]
 
     # How much extra we need to reach
-    insufficient_height = token_window_size - (base_height % token_window_size)
-    insufficient_width = token_window_size - (base_width % token_window_size)
+    insufficient_height = (
+        token_window_size - (base_height % token_window_size)
+    ) % token_window_size
+    insufficient_width = (
+        token_window_size - (base_width % token_window_size)
+    ) % token_window_size
 
     # Try to add the missing height WITHOUT exceeding the full image boundaries
     top_space = window[0] - overlap[0]
