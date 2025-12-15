@@ -42,6 +42,7 @@ from huggingface_hub.errors import LocalEntryNotFoundError
 from json_checker import Checker
 
 from .abstract_depth_map_generation_app import DepthMapGeneration
+from .moge2_depth_generation_tools import compute_tile_size_and_overlap
 from .moge2_wrapper import moge2_wrapper
 
 
@@ -196,9 +197,25 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
             "arrays", name="moge_output_sensor_" + image_key
         )
 
-        margin = 28
+        window_size, margin = compute_tile_size_and_overlap(
+            self.orchestrator.orchestrator_conf["max_ram_per_worker"],
+            self.model,
+            optimal_tile_size=840,
+            overlap=28,
+            min_tile_size=420,
+        )
+
+        logging.warning(
+            f"Using window size {window_size} with overlap {margin}"
+        )
+
         moge_output.create_grid(
-            sensor_width, sensor_height, 812, 812, margin, margin
+            sensor_width,
+            sensor_height,
+            window_size,
+            window_size,
+            margin,
+            margin,
         )
 
         [saving_info] = self.orchestrator.get_saving_infos([moge_output])

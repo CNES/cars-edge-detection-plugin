@@ -70,6 +70,11 @@ def moge2_wrapper(sensor, window, overlap, model_name, saving_info, tile_id):
         overlaps={"left": 0, "right": 0, "up": 0, "down": 0},
     )
 
+    # cleanup
+    del model
+    del input_image
+    del output
+
     return out_dataset
 
 

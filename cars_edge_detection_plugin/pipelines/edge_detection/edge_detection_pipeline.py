@@ -112,6 +112,7 @@ class EdgeDetection(PipelineTemplate):
             OptionalKey(EDGE_DETECTION): dict,
             OptionalKey(PIPELINE): str,
             OptionalKey(ADVANCED): dict,
+            OptionalKey(ORCHESTRATOR): dict,
         }
 
         checker_inputs = Checker(global_schema)
