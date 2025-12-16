@@ -111,6 +111,6 @@ def compute_tile_size_and_overlap(
         return min_window, overlap
 
     # tile size between optimal and min, that exactly fits the memory provided
-    best_tile_size = best_token_count
+    best_tile_size = tokens_to_tile(best_token_count)
     best_window = best_tile_size - 2 * overlap
     return best_window, overlap

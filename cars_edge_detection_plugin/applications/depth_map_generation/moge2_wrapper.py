@@ -100,7 +100,7 @@ def add_insufficient_overlap(
     ) % token_window_size
 
     # Try to add the missing height WITHOUT exceeding the full image boundaries
-    top_space = window[0] - overlap[0]
+    top_space = max(window[0] - overlap[0], 0)
     bottom_space = max_img_size[0] - window[1] - overlap[1]
 
     add_top = min(insufficient_height // 2, top_space)
@@ -112,7 +112,7 @@ def add_insufficient_overlap(
     overlap[1] += add_bottom
 
     # Try to add the missing width WITHOUT exceeding the full image boundaries
-    left_space = window[2] - overlap[2]
+    left_space = max(window[2] - overlap[2], 0)
     right_space = max_img_size[1] - window[3] - overlap[3]
 
     add_left = min(insufficient_width // 2, left_space)
@@ -127,8 +127,7 @@ def add_insufficient_overlap(
     final_height = window[1] + overlap[1] - window[0] + overlap[0]
     final_width = window[3] + overlap[3] - window[2] + overlap[2]
 
-    # token window = 14×14 = 196
-    token_count = np.ceil(final_height * final_width / 196)
+    token_count = np.ceil(final_height * final_width / token_window_size**2)
 
     return overlap, token_count
 
@@ -270,7 +269,7 @@ def ensure_three_channels(img: np.ndarray) -> np.ndarray:
         out = np.repeat(norm_band(img[0, :, :])[None, :, :], 3, axis=0)
 
     elif channels == 2:
-        # 2 -> recommended:
+        # 2 ->
         #   - band0 -> R
         #   - band1 -> G
         #   - average -> B
@@ -280,7 +279,7 @@ def ensure_three_channels(img: np.ndarray) -> np.ndarray:
         out = np.stack([band_0, band_1, avg], axis=2)
 
     elif channels >= 3:
-        # Use the first 3 bands (common practice for multispectral)
+        # 3 -> Use the first 3 bands
         out = np.stack(
             [
                 norm_band(img[0, :, :]),
