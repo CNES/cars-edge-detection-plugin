@@ -1,0 +1,25 @@
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  TEST_RUNNER_TAG: "Usine_Logicielle_Podman"
+
+cache:
+  paths:
+    - .cache/pip
+
+include:
+  # Sonarqube job
+  - component: $CI_SERVER_FQDN/dali/cars-park/cars-ci/cars-ci-variables@master
+
+image: python:latest
+
+before_script:
+  - python --version ; pip --version  # For debugging
+  - python -m venv venv
+  - source venv/bin/activate
+  - make install
+
+test:
+  tags:
+    - ${TEST_RUNNER_TAG}
+  script:
+    - pytest
