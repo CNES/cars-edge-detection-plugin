@@ -101,24 +101,24 @@ def add_insufficient_overlap(
 
     # Try to add the missing height WITHOUT exceeding the full image boundaries
     top_space = max(window[0] - overlap[0], 0)
-    bottom_space = max_img_size[0] - window[1] - overlap[1]
+    bottom_space = max_img_size[1] - window[1] - overlap[1]
 
     add_top = min(insufficient_height // 2, top_space)
     add_bottom = insufficient_height - add_top
     add_bottom = min(add_bottom, bottom_space)
-    add_top = insufficient_height - add_bottom
+    add_top = min(insufficient_height - add_bottom, top_space)
 
     overlap[0] += add_top
     overlap[1] += add_bottom
 
     # Try to add the missing width WITHOUT exceeding the full image boundaries
     left_space = max(window[2] - overlap[2], 0)
-    right_space = max_img_size[1] - window[3] - overlap[3]
+    right_space = max_img_size[0] - window[3] - overlap[3]
 
     add_left = min(insufficient_width // 2, left_space)
     add_right = insufficient_width - add_left
     add_right = min(add_right, right_space)
-    add_left = insufficient_width - add_right
+    add_left = min(insufficient_width - add_right, left_space)
 
     overlap[2] += add_left
     overlap[3] += add_right

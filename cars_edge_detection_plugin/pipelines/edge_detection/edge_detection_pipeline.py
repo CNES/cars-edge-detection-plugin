@@ -106,6 +106,7 @@ class EdgeDetection(PipelineTemplate):
 
     def check_global_schema(self, conf):
 
+        # at least input and output are needed
         global_schema = {
             INPUT: dict,
             OUTPUT: dict,

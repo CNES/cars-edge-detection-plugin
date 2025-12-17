@@ -1,25 +1,35 @@
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   TEST_RUNNER_TAG: "Usine_Logicielle_Podman"
-
-cache:
-  paths:
-    - .cache/pip
+  CARS_ENV_IMAGE_TAG: latest
+  # CARS environment image configuration
+  CARS_ENV_IMAGE_NAME: "cars-ci-docker-snapshot-local/cars-deps-env"
 
 include:
   # Sonarqube job
   - component: $CI_SERVER_FQDN/dali/cars-park/cars-ci/cars-ci-variables@master
 
-image: python:latest
-
-before_script:
-  - python --version ; pip --version  # For debugging
-  - python -m venv venv
-  - source venv/bin/activate
-  - make install
-
-test:
-  tags:
-    - ${TEST_RUNNER_TAG}
+cars-python-job:
+  image: ${UL_ARTIFACTORY_HOST}/${CARS_ENV_IMAGE_NAME}:${CARS_ENV_IMAGE_TAG}
+  before_script:
+    - mkdir -p /usr/local/share/ca-certificates/
+    - cat ${CNES_CERTIFICATE} > /usr/local/share/ca-certificates/my-cert.crt
+    - cat /usr/local/share/ca-certificates/my-cert.crt >> /etc/ssl/certs/ca-certificates.crt
+    - source /app/cars/venv/bin/activate
+    - apt-get update -y # opencv2 dependencies
+    - apt install libgl1-mesa-glx -y
+    - apt-get install ffmpeg libsm6 libxext6 -y # opencv2 dependencies
+    # All dependencies should already be installed in the docker env
+    - VENV="/app/cars/venv" make install
+    - pip list
+    - cars-download-moge2 # download the default model
   script:
-    - pytest
+    - VENV="/app/cars/venv" make test
+  artifacts:
+    paths:
+      - ./pytest-report.xml
+      - ./coverage.xml
+      - tests/data/intermediate_data
+    when: always
+    expire_in: 1 day
+
