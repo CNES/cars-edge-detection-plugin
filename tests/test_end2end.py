@@ -69,7 +69,7 @@ def test_end2end_gizeh_inputs():
         )
 
         conf_applications = {
-            "depth_map_generation": {"model": "Ruicheng/moge-2-vitl-normal"}
+            "depth_map_generation": {"model": "Ruicheng/moge-2-vitb-normal"}
         }
 
         input_conf["edge_detection"]["applications"] = conf_applications

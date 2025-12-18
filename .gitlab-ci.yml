@@ -22,7 +22,7 @@ cars-python-job:
     # All dependencies should already be installed in the docker env
     - VENV="/app/cars/venv" make install
     - pip list
-    - cars-download-moge2 # download the default model
+    - cars-download-moge2 --model vitb-normal # download the default model
   script:
     - VENV="/app/cars/venv" make test
   artifacts:
