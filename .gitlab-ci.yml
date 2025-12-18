@@ -24,6 +24,7 @@ cars-python-job:
     - pip list
     - cars-download-moge2 --model vitb-normal # download the default model
   script:
+    - VENV="/app/cars/venv" make lint
     - VENV="/app/cars/venv" make test
   artifacts:
     paths:
