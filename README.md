@@ -1,51 +1,96 @@
-# Nom du projet
-Si possible, ajoutez un logo ou une capture de l'application pour rendre votre page plus dynamique/attrayante.
+# Edge Detection plugin for CARS
 
-- [Contexte](#contexte)
+This plugin enables the use of the MoGe2 model in CARS, for higher accuracy building reconstruction.
+
+- [Context](#contexte)
 - [Installation](#installation)
-- [Utilisation](#utilisation) 
-- [Liens utiles](#liens-utiles)
+- [Using the new pipeline](#using-the-new-pipeline) 
 
-## Contexte
+## Context
 
-Décrivez en quelques phrases le concept ou l'objectif de ce projet. Pensez à préciser s'il s'agit d'un projet spatial ou non.
-
-Listez les points de contact du projet :
-- Responsable CNES
-- Responsable technique
-- Autres
-
-Vous pouvez également ajouter un lien vers le gitlab-pages du projet si vous en avez un.
+This plugin is made to be used in conjunction with CARS, the stereo-reconstruction software. 
+More information can be found over at [CARS's GitHub page](https://github.com/CNES/cars).
 
 ## Installation
 
-Décrivez les différentes étapes d'installation du projet pour quelqu'un qui partirait du dépôt GitLab cloné dans un environnement HPC. Pensez entre autres à :
+First clone this repository, using :
 
-- Quel(s) module(s) importer ?
-- La liste de dépendances : est-elle bien renseignée dans un fichier requirements dans le dépôt ?
-- Y a-t-il des variables d'environnement à mettre en place ?
-
-Vous pouvez lister les commandes dans des encadrés, entrecoupés d'explications.
-
-```
-$ commande 1 
-$ commande 2   
+```bash
+$ git clone git@gitlab.cnes.fr:dali/cars-park/cars-plugins/cars-edge-detection-plugin.git
+$ cd cars-edge-detection-plugin   
 ``` 
 
-## Utilisation
+You can then create a virtual environment and install the plugin, which will install CARS automatically :
 
-Une fois le module installé, comment le lance-t-on ou lui fait-on appel ? Listez les différentes options avec si possible des illustrations du résultat obtenu. 
-
-Là-aussi, vous pouvez utiliser des encadrés pour le code.
-
-```
-$ commande --option
+```bash
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ make install   
 ``` 
 
-## Liens utiles
-- [Confluence de l'Usine Logicielle](https://confluence.cnes.fr/pages/viewpage.action?pageId=17961975)
-    - [Manuel pour l'utilisation de GitLab](https://confluence.cnes.fr/display/USINELOG/GitLab+-+Manuel+utilisateur)
-    - [Comment choisir son workflow Git](https://confluence.cnes.fr/display/USINELOG/Gestion+de+configuration+-+Choix+du+flow+Git)
-    - [Manuel pour l'utilisation de GitLab-CI](https://confluence.cnes.fr/display/USINELOG/GitLab-CI)
-- [Demandes de support à l'UL](https://confluence.cnes.fr/display/USINELOG/Les+demandes+de+support)
-- Vos propres pages de documentation :D
+Or install the plugin in your own environment, if it already has CARS :
+
+```bash
+$ source your/own/env/activate
+$ pip install .
+```
+
+Once installed, don't forget to download a MoGe2 model, for example Ruicheng/moge-2-vitl-normal, using this command :
+
+```bash
+$ cars-download-moge2 --model vitl-normal
+```
+
+Or via any other means if you don't have a direct access to the internet.
+
+## Using the new pipeline
+
+Though this pipeline is intended to be used within CARS's meta pipeline, it can still be used as a stand-alone pipeline by providing the right configuration.
+
+Once your configuration file is ready, you can launch the pipeline using CARS : 
+
+```bash
+$ cars configfile.yaml
+```
+
+### Configuration
+
+The edge detection pipeline can be enabled by setting the pipeline parameter in the global advanced section of the CARS configuration.
+
+A minimal example configuration is shown below:
+
+```yaml
+input:
+  sensors:
+    one: # sensor image path
+    two: # sensor image path
+advanced:
+  pipeline: edge_detection
+output:
+  directory: outresults
+```
+
+The pipeline operates on image pairs. By default, edge detection is only computed where required by downstream applications, meaning on the left images only.
+
+Additional options specific to the edge detection pipeline can be configured under the edge_detection section. 
+For example, edge detection can also be applied to right images, and the MoGe2-based depth map generation application can be configured as follows:
+
+```yaml
+input: ...
+advanced: ...
+output: ...
+edge_detection:
+  advanced:
+    save_intermediate_data: false
+    right_image_edge_detection: true
+  applications:
+    depth_map_generation:
+      method: moge2
+      model: Ruicheng/moge-2-vitl-normal
+      save_intermediate_data: true
+```
+
+The ``model`` parameter can reference either a local MoGe2 checkpoint or a Hugging Face model identifier.
+
+If ``save_intermediate_data`` is set to false, only the edge map will be created in the output folder. 
+Else, all by-products (depth map, normal map, tile_id) will be saved in the ``dump_dir`` folder.
