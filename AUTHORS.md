@@ -12,9 +12,9 @@ This file keeps track of authors contributions.
 
 ## Development Lead
 
-
-## Contributors
-
-
-## Original Developers/Designers/Supporters
-
+* David Youssefi <david.youssefi@cnes.fr>
+* Valentine Bellet <valentine.bellet@cnes.fr>
+* Yoann Steux <yoann.steux@cs-soprasteria.com>
+* Mathis Roux <mathis.roux@cs-soprasteria.com>
+* Marian Rassat <marian.rassat@cs-soprasteria.com>
+* Tommy Calendini <tommy.calendini@cs-soprasteria.com>
