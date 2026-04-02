@@ -32,11 +32,6 @@ Copyright (c) 2016, MapBox All rights reserved.
 Website: https://github.com/mapbox/rasterio
 License: BSD 3 Clause.
 
-pytest: helps to write better programs
-Copyright (c) 2004-2020 Holger Krekel and others.
-Website: https://pytest.org
-License: MIT
-
 Json-checker: library for validating Python json data structures
 Copyright (c) 2018 Denis Korytkin
 Website: https://github.com/DKorytkin/json_checker
