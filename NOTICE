@@ -1,0 +1,58 @@
+CARS Edge detection plugin Copyright (c) 2026 Centre National d'Etudes Spatiales (CNES).
+
+This software is distributed under the Apache Software License (ASL) v2.0, see
+LICENSE file or http://www.apache.org/licenses/LICENSE-2.0 for details.
+
+------------------
+CARS Edge detection plugin Dependencies
+------------------
+
+Python: programming language that lets you work quickly and integrate systems more effectively.
+Copyright (c) 2001-2020 Python Software Foundation. All Rights reserved. 
+Website: http://python.org/
+License: Python Software License.
+
+NumPy: The fundamental package for scientific computing with Python. 
+Copyright (c) 2005-2020, NumPy Developers.
+Website: https://numpy.org/
+License: BSD 3 Clause.
+
+Setuptools: build system
+Copyright (C) 2016 Jason R Coombs <jaraco@jaraco.com>
+Website: https://setuptools.readthedocs.io/
+License: MIT.
+
+Xarray: N-D labeled arrays and datasets in Python
+Copyright 2014-2019, xarray Developers
+Website: http://xarray.pydata.org
+License: Apache v2.0.
+
+Rasterio: access to geospatial raster data
+Copyright (c) 2016, MapBox All rights reserved.
+Website: https://github.com/mapbox/rasterio
+License: BSD 3 Clause.
+
+Json-checker: library for validating Python json data structures
+Copyright (c) 2018 Denis Korytkin
+Website: https://github.com/DKorytkin/json_checker
+License: MIT
+
+MoGe: Monocular Geometry Estimation model
+Copyright (c) Microsoft Corporation
+Website: https://github.com/microsoft/moge
+License: MIT
+
+Huggingface_hub: Interaction with HuggingFace, to download models and weights
+Copyright (c) Hugging Face, Inc.
+Website: https://github.com/huggingface/huggingface_hub
+License: Apache v2.0.
+
+CARS: Chaîne Automatique de Restitution Stéréoscopique
+Copyright (c) 2026 CNES
+Website: https://github.com/CNES/cars
+License: Apache v2.0.
+
+PyTorch: Tensor computation and deep neural networks
+Copyright (c) 2016- Facebook, Inc (Adam Paszke)
+Website: https://pytorch.org
+License: BSD 3 Clause.
