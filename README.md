@@ -64,8 +64,7 @@ input:
   sensors:
     one: # sensor image path
     two: # sensor image path
-advanced:
-  pipeline: edge_detection
+pipeline: edge_detection
 output:
   directory: outresults
 ```
@@ -88,6 +87,7 @@ edge_detection:
       method: moge2
       model: Ruicheng/moge-2-vitl-normal
       save_intermediate_data: true
+      edge_threshold: 0.7
 ```
 
 The ``model`` parameter can reference either a local MoGe2 checkpoint or a Hugging Face model identifier.

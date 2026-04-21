@@ -39,7 +39,7 @@ from huggingface_hub import snapshot_download
 from huggingface_hub.errors import LocalEntryNotFoundError
 
 # Third party imports
-from json_checker import Checker
+from json_checker import Checker, And, Or
 
 from .abstract_depth_map_generation_app import DepthMapGeneration
 from .moge2_depth_generation_tools import compute_tile_size_and_overlap
@@ -66,6 +66,7 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
         # check conf
         self.used_method = self.used_config["method"]
         self.model = self.used_config["model"]
+        self.edge_threshold = self.used_config["edge_threshold"]
 
         # Init orchestrator
         self.orchestrator = None
@@ -101,11 +102,13 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
         overloaded_conf["model"] = self.check_model_exists(
             overloaded_conf["model"]
         )
+        overloaded_conf["edge_threshold"] = conf.get("edge_threshold", 0.6)
 
         depth_generation_schema = {
             "save_intermediate_data": bool,
             "method": str,
             "model": str,
+            "edge_threshold": And(Or(int, float), lambda x: 0 <= x <= 1),
         }
 
         # Check conf
@@ -270,6 +273,7 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
                     window,
                     overlap,
                     self.model,
+                    self.edge_threshold,
                     full_saving_info,
                     tile_id,
                 )
