@@ -39,7 +39,7 @@ from huggingface_hub import snapshot_download
 from huggingface_hub.errors import LocalEntryNotFoundError
 
 # Third party imports
-from json_checker import Checker, And, Or
+from json_checker import And, Checker, Or
 
 from .abstract_depth_map_generation_app import DepthMapGeneration
 from .moge2_depth_generation_tools import compute_tile_size_and_overlap

@@ -31,7 +31,9 @@ from moge.model.v2 import MoGeModel
 from rasterio.windows import Window
 
 
-def moge2_wrapper(sensor, window, overlap, model_name, edge_threshold, saving_info, tile_id):
+def moge2_wrapper(
+    sensor, window, overlap, model_name, edge_threshold, saving_info, tile_id
+):
     """
     The main wrapper for the MoGe2 depth generation application.
     """
@@ -53,7 +55,9 @@ def moge2_wrapper(sensor, window, overlap, model_name, edge_threshold, saving_in
     output = model.infer(input_image, use_fp16=False, num_tokens=token_count)
 
     # format data
-    out_dataset = format_moge_output(output, overlap, tile_id, edge_threshold=edge_threshold)
+    out_dataset = format_moge_output(
+        output, overlap, tile_id, edge_threshold=edge_threshold
+    )
 
     cars_dataset.fill_dataset(
         out_dataset,
