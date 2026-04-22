@@ -42,6 +42,21 @@ $ cars-download-moge2 --model vitl-normal
 ```
 
 Or via any other means if you don't have a direct access to the internet.
+If working from an environment such as the TREX cluster, an option is to directly use wget to fetch the model file, 
+then move it to its proper place for the plugin to recognize it :
+
+```bash
+# fetch the model
+$ wget https://huggingface.co/Ruicheng/moge-2-vitl-normal/resolve/main/model.pt
+
+# move the model to the right place
+# it should be under cars_edge_detection_plugin/applications/depth_map_generation/models with the proper name for each model :
+#  - moge-2-vitl-normal.pt
+#  - moge-2-vitb-normal.pt
+#  - moge-2-vits-normal.pt
+$ mkdir [your/plugin/installation/path/]cars_edge_detection_plugin/applications/depth_map_generation/models
+$ mv ./model.pt [your/plugin/installation/path/]cars_edge_detection_plugin/applications/depth_map_generation/models/moge-2-vitl-normal.pt
+```
 
 ## Using the new pipeline
 
