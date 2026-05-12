@@ -41,7 +41,7 @@ Once installed, don't forget to download a MoGe2 model, for example Ruicheng/mog
 $ cars-download-moge2 --model vitl-normal
 ```
 
-Or via any other means if you don't have a direct access to the internet.
+Or via any other means if you don't have a direct access to the internet. The plugin will attempt to download the vitl-normal model on first import, providing at least the default model.
 If working from an environment such as the TREX cluster, an option is to directly use wget to fetch the model file, 
 then move it to its proper place for the plugin to recognize it :
 
