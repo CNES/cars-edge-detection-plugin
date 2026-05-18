@@ -24,3 +24,9 @@ Init file of the Edge detection plugin for CARS
 
 import cars_edge_detection_plugin.applications  # noqa: F401
 import cars_edge_detection_plugin.pipelines  # noqa: F401
+from cars_edge_detection_plugin.download_models import (
+    ensure_default_model_available,
+)
+
+# Best-effort auto-download of the default model on import.
+ensure_default_model_available()

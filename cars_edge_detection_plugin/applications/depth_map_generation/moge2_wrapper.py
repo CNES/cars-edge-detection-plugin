@@ -31,7 +31,9 @@ from moge.model.v2 import MoGeModel
 from rasterio.windows import Window
 
 
-def moge2_wrapper(sensor, window, overlap, model_name, saving_info, tile_id):
+def moge2_wrapper(
+    sensor, window, overlap, model_name, edge_threshold, saving_info, tile_id
+):
     """
     The main wrapper for the MoGe2 depth generation application.
     """
@@ -53,7 +55,9 @@ def moge2_wrapper(sensor, window, overlap, model_name, saving_info, tile_id):
     output = model.infer(input_image, use_fp16=False, num_tokens=token_count)
 
     # format data
-    out_dataset = format_moge_output(output, overlap, tile_id)
+    out_dataset = format_moge_output(
+        output, overlap, tile_id, edge_threshold=edge_threshold
+    )
 
     cars_dataset.fill_dataset(
         out_dataset,
@@ -139,7 +143,7 @@ def get_edges(normals, threshold=0.6):
     return (dot_product < threshold).astype(np.int16)
 
 
-def format_moge_output(output, overlap, tile_id):
+def format_moge_output(output, overlap, tile_id, edge_threshold=0.6):
     """
     Format the output given by MoGe into an xr.DataArray contaning :
     - depth (row, col)
@@ -159,7 +163,7 @@ def format_moge_output(output, overlap, tile_id):
 
     depth = to_numpy(output["depth"])
     normals = to_numpy(output["normal"])
-    edges = get_edges(normals)
+    edges = get_edges(normals, threshold=edge_threshold)
 
     depth = remove_overlap(depth)
     normals = remove_overlap(normals)
