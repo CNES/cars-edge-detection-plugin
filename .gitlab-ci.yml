@@ -2,7 +2,7 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   TEST_RUNNER_TAG: "Usine_Logicielle_Podman"
   CARS_ENV_IMAGE_TAG: latest
-  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_STRATEGY: none
   # CARS environment image configuration
   CARS_ENV_IMAGE_NAME: "cars-ci-docker-snapshot-local/cars-deps-env"
 
@@ -16,6 +16,8 @@ cars-python-job:
     - mkdir -p /usr/local/share/ca-certificates/
     - cat ${CNES_CERTIFICATE} > /usr/local/share/ca-certificates/my-cert.crt
     - cat /usr/local/share/ca-certificates/my-cert.crt >> /etc/ssl/certs/ca-certificates.crt
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
     - source /app/cars/venv/bin/activate
     - apt-get update -y # opencv2 dependencies
     - apt install libgl1-mesa-glx -y
