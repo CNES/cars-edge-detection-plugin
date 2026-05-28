@@ -16,9 +16,17 @@ More information can be found over at [CARS's GitHub page](https://github.com/CN
 First clone this repository, using :
 
 ```bash
-$ git clone git@gitlab.cnes.fr:dali/cars-park/cars-plugins/cars-edge-detection-plugin.git
+$ git clone --recurse-submodules git@gitlab.cnes.fr:dali/cars-park/cars-plugins/cars-edge-detection-plugin.git
 $ cd cars-edge-detection-plugin   
 ``` 
+
+> **Note:** `--recurse-submodules` is required. This project vendors [MoGe](https://github.com/microsoft/MoGe) as a submodule, and MoGe itself vendors `utils3d` and `pipeline` as nested submodules. A plain `git clone` will leave those directories empty, causing build failures.
+
+If you already cloned the repository without submodules, initialize them before installing:
+
+```bash
+$ git submodule update --init --recursive
+```
 
 You can then create a virtual environment and install the plugin, which will install CARS automatically :
 
