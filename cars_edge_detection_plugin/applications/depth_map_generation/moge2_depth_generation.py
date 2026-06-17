@@ -152,7 +152,7 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
                 repo_id=model, local_files_only=True
             )
 
-            return local_model_path
+            return os.path.join(local_model_path, "model.pt")
 
         except LocalEntryNotFoundError:
             logging.warning(
@@ -163,7 +163,7 @@ class MoGe2DepthGeneration(DepthMapGeneration, short_name="moge2"):
         try:
             local_model_path = snapshot_download(repo_id=model)
 
-            return local_model_path
+            return os.path.join(local_model_path, "model.pt")
         except Exception as exception:
             logging.error(
                 f"The requested MoGe-2 model ({model}) could not be downloaded."
