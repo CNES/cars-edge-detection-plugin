@@ -22,6 +22,8 @@
 Depth map generation app wrapper functions for CARS
 """
 
+import warnings
+
 import numpy as np
 import torch
 import xarray as xr
@@ -48,11 +50,18 @@ def moge2_wrapper(
 
     # init moge2
     device = torch.device("cpu")
-    model = MoGeModel.from_pretrained(model_name).to(device)
+    with warnings.catch_warnings():  # suppress prints from pytorch
+        warnings.simplefilter("ignore")
+        model = MoGeModel.from_pretrained(model_name).to(device)
+
     input_image = torch.tensor(input_image, dtype=torch.float32, device=device)
 
     # run model
-    output = model.infer(input_image, use_fp16=False, num_tokens=token_count)
+    with warnings.catch_warnings():  # suppress prints from pytorch
+        warnings.simplefilter("ignore")
+        output = model.infer(
+            input_image, use_fp16=False, num_tokens=token_count
+        )
 
     # format data
     out_dataset = format_moge_output(

@@ -37,6 +37,7 @@ import os
 from cars.applications.application import Application
 
 # CARS imports
+from cars.core.progress.progress import ProgressTree
 from cars.core.utils import safe_makedirs
 from cars.orchestrator import orchestrator
 from cars.orchestrator.cluster.log_wrapper import cars_profile
@@ -196,11 +197,40 @@ class EdgeDetection(PipelineTemplate):
 
         return conf
 
+    def setup_progress_tracking(self, parent_pipeline_id=None):
+        """
+        Setup progress tracking for edge detection.
+
+        :param parent_pipeline_id: Optional parent pipeline ID
+        :type parent_pipeline_id: int or None
+        :return: Task ID for the edge detection task
+        :rtype: int
+        """
+        progress_tree = ProgressTree()
+        if parent_pipeline_id is None:
+            self.pipeline_progress_id = progress_tree.begin_pipeline(
+                "Edge Detection"
+            )
+        else:
+            self.pipeline_progress_id = parent_pipeline_id
+        self.task_progress_id = progress_tree.register_task(
+            self.pipeline_progress_id,
+            "edge_detection",
+            weight=1.0,
+        )
+        return self.task_progress_id
+
     @cars_profile(name="Run_edge_detection", interval=0.5)
-    def run(self, args=None):  # pylint: disable=unused-argument
+    def run(
+        self, args=None, parent_pipeline_id=None
+    ):  # pylint: disable=unused-argument
         """
         Exécute le pipeline EdgeDetection
+
+        :param args: parsed command-line arguments
+        :param parent_pipeline_id: Optional pipeline ID for progress tracking
         """
+        self.setup_progress_tracking(parent_pipeline_id)
 
         sensors_to_compute = [
             left for left, _ in self.used_conf[INPUT]["pairing"]
@@ -233,6 +263,7 @@ class EdgeDetection(PipelineTemplate):
                 logging.info(
                     f"Starting Depth map generation for sensor {sensor_key}"
                 )
+                self.cars_orchestrator.set_target_task(self.task_progress_id)
                 self.depth_map_generation_app.run(
                     image=self.used_conf[INPUT]["sensors"][sensor_key],
                     image_key=sensor_key,

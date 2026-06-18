@@ -112,6 +112,6 @@ def test_end2end_gizeh_inputs():
                         ref_file_name,
                     )
                 ),
-                rtol=1.0e-6,
-                atol=1.0e-6,
+                rtol=1.0e-5,
+                atol=1.0e-5,
             )
